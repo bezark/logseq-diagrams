@@ -1,0 +1,11 @@
+{
+  "name": "Diagrams",
+  "version": "0.0.1",
+  "description": "make diagrams",
+  "main": "index.html",
+  "author": "John",
+  "license": "MIT",
+  "logseq": {
+    "id": "_7h5acgdvx"
+  }
+}
