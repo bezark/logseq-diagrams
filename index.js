@@ -48,11 +48,12 @@ let uiVis = false
       return
     }
 
-    let currentPage = await logseq.Editor.getCurrentPageBlocksTree()
+    let currentPage = await logseq.Editor.getCurrentPage()
+    let currentPageContent = await logseq.Editor.getCurrentPageBlocksTree()
     
-    
+    console.log(currentPage);
     // const blocks = await logseq.Editor.getCurrentPageBlocksTree()
-    initSketch(diagram, currentPage)
+    initSketch(diagram, currentPage, currentPageContent)
   })
 
   // mount to root
@@ -64,13 +65,13 @@ let uiVis = false
  
  * @param data
  */
-function initSketch (el, data) {
+function initSketch (el, page, content) {
 
 
 console.log('firing')
   // let mind = new MindElixir(options)
   // mind.init()
-  addNodes(data)
+  newGraph(page, content)
   const patchRightBottomBar = () => {
     // const barWrap = document.querySelector('toolbar.rb')
     // barWrap.appendChild(btnClose)
