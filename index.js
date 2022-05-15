@@ -1,7 +1,7 @@
 /**
  * User model
  */
-console.log("Diagrams Loaded")
+console.log("Diagrams Looooaded")
 function createModel () {
   return {
     openDiagram () {
@@ -20,7 +20,7 @@ function main () {
   const diagram = document.createElement('div')
   
   logseq.Editor.registerSlashCommand(
-    'Diagram',
+    'Diagram!',
     async () => {
         logseq.showMainUI()
     }
@@ -51,6 +51,11 @@ let uiVis = false
     let currentPage = await logseq.Editor.getCurrentPage()
     let currentPageContent = await logseq.Editor.getCurrentPageBlocksTree()
     
+
+    
+
+
+
     console.log(currentPage);
     // const blocks = await logseq.Editor.getCurrentPageBlocksTree()
     initSketch(diagram, currentPage, currentPageContent)
@@ -86,3 +91,5 @@ console.log('firing')
 
 // bootstrap
 logseq.ready(createModel(), main).catch(console.error)
+
+

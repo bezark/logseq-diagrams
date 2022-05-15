@@ -1,4 +1,4 @@
-var cy = cytoscape({
+let cy = cytoscape({
 
   container: document.getElementById('cy'), // container to render in
 
@@ -28,11 +28,11 @@ var cy = cytoscape({
         "shape":"round-rectangle",
         
         "background-color":"white",
-        "border-width": "1px",
-        "border-color": "black",
+        // "border-width": "1px",
+        // "border-color": "black",
         "width": "label",
         "height": "label",
-        "padding ": 5,
+        // "padding ": 5,
         // "padding-relative-to":"average",
       }
     },
@@ -153,15 +153,48 @@ function newGraph(page, content){
   cy.$().remove();
   addNodes(content)
 
+  var layout = cy.layout({
+    name: 'cose',
+    padding: 10
+  });
+  
+  layout.run();
+
 }
-function addNodes(blocks, parent){
-  console.log(blocks)
+
+
+
+async function addNodes(blocks, parent){
+
   // cy.elements = []
+
+  
   for (const block of blocks) {
+    // block.content = filterBlock(block.content)
+
+
+    if (block.content.includes("((") && block.content.includes("))")) {
+      let blockContent = block.content;
+      // Get content if it's q block reference
+      const rxGetId = /\(\(([^)]*)\)\)/;
+      const blockId = rxGetId.exec(blockContent);
+      const blocke = await logseq.Editor.getBlock(blockId[1], {
+        includeChildren: true,
+      });
+  
+      blockContent = blockContent.replace(
+        `((${blockId[1]}))`,
+        blocke.content.substring(0, blocke.content.indexOf("id::"))
+      );
+  
+      block.content =blockContent
+    }
+
+
     cy.add({
       group: 'nodes',
-      data: { id: block.id, name: block.content, parent: parent },
-      position: { x: getRandomInt(1000), y: getRandomInt(1000) },
+      data: { id: block.id, name: block.content, parent: parent, href:"www.johnbezark.com" },
+      // position: { x: getRandomInt(500), y: getRandomInt(500) },
       // removed: false,
       // selected: false,
       // selectable: true,
@@ -169,6 +202,7 @@ function addNodes(blocks, parent){
       // grabbed: false,
       // grabbable: true,
   });
+    // if.block.prop
     if(block.children.length>0){
      
       addNodes(block.children, block.id)
@@ -176,6 +210,26 @@ function addNodes(blocks, parent){
     }
   }
 }
+
+function saveGraph(){
+  console.log(cy.elements().jsons())
+  console.log(cy.nodes())
+  
+
+
+}
+
+
+cy.on('tap', 'node', function(){
+  try { // your browser may block popups
+    // window.open( this.data('href') );
+    console.log(this.data())
+  } catch(e){ // fall back on url change
+    // window.location.href = this.data('href');
+  }
+});
+
+
 // 
 let drawingEnabeled = false;
 document.addEventListener('keydown', function (e) {
@@ -226,4 +280,29 @@ document.addEventListener('keydown', function (e) {
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
+}
+
+
+async function filterBlock(content){
+
+  if (content.includes("((") && content.includes("))")) {
+    let blockContent = content;
+    // Get content if it's q block reference
+    const rxGetId = /\(\(([^)]*)\)\)/;
+    const blockId = rxGetId.exec(blockContent);
+    const block = await logseq.Editor.getBlock(blockId[1], {
+      includeChildren: true,
+    });
+
+    blockContent = blockContent.replace(
+      `((${blockId[1]}))`,
+      block.content.substring(0, block.content.indexOf("id::"))
+    );
+
+    return blockContent
+  } else {
+    return content
+  }
+
+ 
 }
